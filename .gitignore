@@ -40,8 +40,13 @@ unit-tests.xml
 # megalinter
 report/
 
+<<<<<<< HEAD
 # act-stack specific ignores
 memory-bank/
 .github/*.chatmode.md
 .venv/
 megalinter-reports/
+=======
+memory-bank/
+.github/*.chatmode.md
+>>>>>>> 4f49b52 (chore: clean up test data and improve code organization)
