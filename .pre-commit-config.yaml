@@ -13,6 +13,7 @@ exclude: |
     pkg/runner/testdata/|
     .*testdata/|
     vendor/|
+    \.venv/|
     pkg/container/docker_cli\.go|
     pkg/container/DOCKER_LICENSE|
     VERSION|

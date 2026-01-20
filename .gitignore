@@ -20,6 +20,13 @@
 
 # Path for actions cache created when running tests
 pkg/runner/act/
+pkg/runner/testdata
+pkg/artifacts/testdata
+pkg/artifactcache/testdata
+pkg/container/testdata
+pkg/exprparser/testdata
+pkg/model/testdata
+cmd/testdata
 
 # act binary
 dist/local/act
@@ -36,4 +43,5 @@ report/
 # act-stack specific ignores
 memory-bank/
 .github/*.chatmode.md
-pkg/runner/testdata/
+.venv/
+megalinter-reports/
