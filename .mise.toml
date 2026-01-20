@@ -1,0 +1,95 @@
+min_version = "2026.1.0"
+
+[settings]
+auto_install           = true
+not_found_auto_install = true
+task_run_auto_install  = true
+
+[tools]
+# Act upstream golangci config states "Minimum golangci-lint version required: v1.46.0"
+# Pin something modern (adjust later if Act CI pins differently).
+go            = "latest"
+golangci-lint = "1.64.6"
+
+# CI-style helpers Act uses
+actionlint = "1.7.10"
+gitleaks   = "8.27.2"
+node       = "22.14.0"
+python     = "3.13.1"
+
+# Use project-local prettier (via npx) but ensure node exists.
+# markdownlint-cli2 is Node-based; install/run via npx.
+# If you later add the missing config file, we can wire that tool too.
+
+[tasks.fmt-go]
+description = "Format Go code"
+run = """
+set -euo pipefail
+gofmt -w .
+"""
+
+[tasks.lint-go]
+description = "golangci-lint using .golangci.yml"
+run = """
+set -euo pipefail
+golangci-lint run -c .golangci.yml
+"""
+
+[tasks.lint-actions]
+description = "Lint GitHub Actions workflows"
+run = """
+set -euo pipefail
+actionlint
+"""
+
+[tasks.lint-secrets]
+description = "gitleaks with repo ignore file"
+run = """
+set -euo pipefail
+gitleaks detect --redact --verbose
+"""
+
+[tasks.fmt-prettier]
+description = "Format supported files with Prettier using upstream .prettierrc.yml and .prettierignore"
+run = """
+set -euo pipefail
+npx --yes prettier --config .prettierrc.yml --ignore-path .prettierignore --write .
+"""
+
+[tasks.lint-markdown]
+description = "markdownlint using upstream .markdownlint.yml"
+run = """
+set -euo pipefail
+npx --yes markdownlint-cli2 --config .markdownlint.yml "**/*.md"
+"""
+
+[tasks.lint]
+description = "Run the local lint suite (fork baseline)"
+run = [
+	"mise run lint-go",
+	"mise run lint-actions",
+	"mise run lint-spelling",
+	"mise run lint-markdown",
+	"mise run lint-secrets",
+]
+
+[tasks.py-venv]
+description = "Create/update local Python venv for repo tooling"
+run = """
+set -euo pipefail
+if [ ! -d .venv ]; then
+  python -m venv .venv
+fi
+. .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -U codespell
+"""
+
+[tasks.lint-spelling]
+description = "codespell using .codespellrc (via local venv)"
+run = """
+set -euo pipefail
+mise run py-venv
+. .venv/bin/activate
+codespell --config .codespellrc
+"""

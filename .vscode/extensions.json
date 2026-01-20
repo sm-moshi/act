@@ -3,7 +3,7 @@
     "editorconfig.editorconfig",
     "golang.go",
     "davidanson.vscode-markdownlint",
-    "esbenp.prettier-vscode",
+    "prettier.prettier-vscode",
     "redhat.vscode-yaml"
   ]
 }

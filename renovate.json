@@ -1,0 +1,80 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  "extends": [
+    "config:recommended",
+    ":preserveSemverRanges",
+    "group:allNonMajor",
+    "helpers:pinGitHubActionDigests",
+    ":disableRateLimiting"
+  ],
+
+  "platformAutomerge": false,
+
+  "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
+
+  "timezone": "Europe/Berlin",
+  "schedule": ["at any time"],
+
+  "prHourlyLimit": 6,
+  "prConcurrentLimit": 3,
+  "rebaseWhen": "conflicted",
+
+  "rangeStrategy": "bump",
+
+  "labels": ["dependencies"],
+
+  "enabledManagers": ["gomod", "github-actions", "dockerfile", "mise"],
+
+  "ignorePaths": ["docs/**/vendor/**", "**/vendor/**", "**/testdata/**"],
+
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["at any time"]
+  },
+
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "groupName": "Go dependencies",
+      "groupSlug": "go-deps",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "go"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "ci"]
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "groupName": "Docker images",
+      "groupSlug": "docker-images",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "docker"]
+    },
+    {
+      "matchManagers": ["mise"],
+      "groupName": "Mise tools",
+      "groupSlug": "mise-tools",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "tooling"]
+    },
+
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "major"],
+      "dependencyDashboardApproval": true
+    },
+
+    {
+      "matchDepTypes": ["indirect"],
+      "matchManagers": ["gomod"],
+      "labels": ["dependencies", "go", "indirect"],
+      "prPriority": -1
+    }
+  ]
+}

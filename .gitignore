@@ -32,3 +32,8 @@ unit-tests.xml
 
 # megalinter
 report/
+
+# act-stack specific ignores
+memory-bank/
+.github/*.chatmode.md
+pkg/runner/testdata/
