@@ -19,8 +19,8 @@
   "timezone": "Europe/Berlin",
   "schedule": ["at any time"],
 
-  "prHourlyLimit": 6,
-  "prConcurrentLimit": 3,
+  "prHourlyLimit": 12,
+  "prConcurrentLimit": 5,
   "rebaseWhen": "conflicted",
 
   "rangeStrategy": "bump",
@@ -42,7 +42,7 @@
 
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["after 01:00 and before 06:00 on monday"]
+    "schedule": ["at any time"]
   },
 
   "packageRules": [
