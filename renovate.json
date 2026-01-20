@@ -1,3 +1,67 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  "baseBranches": ["develop"],
+
+  "extends": [
+    "config:recommended",
+    ":preserveSemverRanges",
+    "group:allNonMajor",
+    "helpers:pinGitHubActionDigests",
+    ":disableRateLimiting"
+  ],
+
+  "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
+
+  "platformAutomerge": false,
+
+  "timezone": "Europe/Berlin",
+  "schedule": ["at any time"],
+
+  "prHourlyLimit": 6,
+  "prConcurrentLimit": 3,
+  "rebaseWhen": "conflicted",
+
+  "rangeStrategy": "bump",
+
+  "labels": ["dependencies"],
+
+  "enabledManagers": [
+    "gomod",
+    "github-actions",
+    "dockerfile",
+    "mise"
+  ],
+
+  "ignorePaths": [
+    "pkg/runner/testdata/**",
+    "**/testdata/**",
+    "**/vendor/**"
+  ],
+
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["after 01:00 and before 06:00 on monday"]
+  },
+
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "groupName": "Go dependencies",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "go"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "ci"]
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
+      "labels": ["dependencies", "major"]
+    }
+  ]
 }
