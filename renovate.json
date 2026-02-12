@@ -11,34 +11,25 @@
     ":disableRateLimiting"
   ],
 
+  "platformAutomerge": false,
+
   "dependencyDashboard": true,
   "dependencyDashboardAutoclose": true,
-
-  "platformAutomerge": false,
 
   "timezone": "Europe/Berlin",
   "schedule": ["at any time"],
 
-  "prHourlyLimit": 12,
-  "prConcurrentLimit": 5,
+  "prHourlyLimit": 6,
+  "prConcurrentLimit": 3,
   "rebaseWhen": "conflicted",
 
   "rangeStrategy": "bump",
 
   "labels": ["dependencies"],
 
-  "enabledManagers": [
-    "gomod",
-    "github-actions",
-    "dockerfile",
-    "mise"
-  ],
+  "enabledManagers": ["gomod", "github-actions", "dockerfile", "mise"],
 
-  "ignorePaths": [
-    "pkg/runner/testdata/**",
-    "**/testdata/**",
-    "**/vendor/**"
-  ],
+  "ignorePaths": ["docs/**/vendor/**", "**/vendor/**", "**/testdata/**"],
 
   "lockFileMaintenance": {
     "enabled": true,
@@ -49,19 +40,43 @@
     {
       "matchManagers": ["gomod"],
       "groupName": "Go dependencies",
+      "groupSlug": "go-deps",
       "separateMinorPatch": true,
       "labels": ["dependencies", "go"]
     },
     {
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions",
+      "groupSlug": "github-actions",
       "separateMinorPatch": true,
       "labels": ["dependencies", "ci"]
     },
     {
+      "matchManagers": ["dockerfile"],
+      "groupName": "Docker images",
+      "groupSlug": "docker-images",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "docker"]
+    },
+    {
+      "matchManagers": ["mise"],
+      "groupName": "Mise tools",
+      "groupSlug": "mise-tools",
+      "separateMinorPatch": true,
+      "labels": ["dependencies", "tooling"]
+    },
+
+    {
       "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true,
-      "labels": ["dependencies", "major"]
+      "labels": ["dependencies", "major"],
+      "dependencyDashboardApproval": true
+    },
+
+    {
+      "matchDepTypes": ["indirect"],
+      "matchManagers": ["gomod"],
+      "labels": ["dependencies", "go", "indirect"],
+      "prPriority": -1
     }
   ]
 }
