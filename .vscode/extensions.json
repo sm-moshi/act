@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "editorconfig.editorconfig",
-    "golang.go",
-    "davidanson.vscode-markdownlint",
-    "prettier.prettier-vscode",
-    "redhat.vscode-yaml"
-  ]
-}
