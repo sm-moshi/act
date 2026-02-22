@@ -1,4 +1,6 @@
 # Minimum golangci-lint version required: v1.46.0
+version: 2
+
 run:
   timeout: 3m
 
@@ -33,10 +35,6 @@ linters-settings:
             desc: Please keep logging unified using only github.com/sirupsen/logrus
 linters:
   enable:
-    - gosimple
-    - staticcheck
-    - unused
-    - govet
     - revive
     - gocyclo
     - gosec
@@ -46,11 +44,13 @@ linters:
     - prealloc
     - copyloopvar
     - gocritic
-    - goimports
     - whitespace
     - misspell
     - depguard
     - importas
     - contextcheck
     - nolintlint
-    - revive
+
+formatters:
+  enable:
+    - goimports

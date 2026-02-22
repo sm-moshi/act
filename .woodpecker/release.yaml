@@ -5,7 +5,7 @@ when:
 
 steps:
   - name: release
-    image: harbor.m0sh1.cc/hub/goreleaser/goreleaser:v2
+    image: harbor.m0sh1.cc/hub/goreleaser/goreleaser:v2.14.0
     environment:
       CGO_ENABLED: "0"
       GITHUB_TOKEN:
