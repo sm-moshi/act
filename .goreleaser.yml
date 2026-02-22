@@ -20,7 +20,15 @@ builds:
       - '7'
     ignore:
       - goos: windows
-        goarm: '6'
+        goarch: arm
+      - goos: darwin
+        goarch: '386'
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: riscv64
+      - goos: darwin
+        goarch: riscv64
 checksum:
   name_template: 'checksums.txt'
 archives:

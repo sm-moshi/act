@@ -7,7 +7,7 @@ when:
 
 steps:
   - name: lint
-    image: harbor.m0sh1.cc/hub/golangci/golangci-lint:v1.64.8
+    image: harbor.m0sh1.cc/hub/golangci/golangci-lint:v2.10.1
     environment:
       CGO_ENABLED: "0"
     commands:
