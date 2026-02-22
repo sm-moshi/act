@@ -1,5 +1,6 @@
 # Go test — unit tests with coverage
 when:
+  - event: manual
   - event: pull_request
   - event: push
     branch: develop

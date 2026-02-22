@@ -1,5 +1,6 @@
 # Go build — goreleaser snapshot (no publish)
 when:
+  - event: manual
   - event: pull_request
   - event: push
     branch: develop
