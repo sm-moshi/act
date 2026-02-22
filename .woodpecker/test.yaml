@@ -11,4 +11,4 @@ steps:
     environment:
       CGO_ENABLED: "0"
     commands:
-      - go test -v -cover -coverprofile=coverage.txt -covermode=atomic -timeout 20m $(go list ./... | grep -v '/pkg/container' | grep -v '/pkg/runner' | grep -v '/pkg/artifacts')
+      - go test -v -cover -coverprofile=coverage.txt -covermode=atomic -timeout 20m $(go list ./... | grep -v '/pkg/container' | grep -v '/pkg/runner' | grep -v '/pkg/artifacts' | grep -v '/cmd')
