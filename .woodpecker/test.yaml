@@ -1,0 +1,13 @@
+# Go test — unit tests with coverage
+when:
+  - event: pull_request
+  - event: push
+    branch: develop
+
+steps:
+  - name: test
+    image: golang:1.24
+    environment:
+      CGO_ENABLED: "0"
+    commands:
+      - go test -v -cover -coverprofile=coverage.txt -covermode=atomic -timeout 20m ./...

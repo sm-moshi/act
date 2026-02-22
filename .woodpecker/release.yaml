@@ -1,0 +1,14 @@
+# Go release — goreleaser on tag push (GitHub release, no Docker images)
+when:
+  - event: tag
+    ref: "refs/tags/v*"
+
+steps:
+  - name: release
+    image: goreleaser/goreleaser:v2
+    environment:
+      CGO_ENABLED: "0"
+      GITHUB_TOKEN:
+        from_secret: github_token
+    commands:
+      - goreleaser release --clean

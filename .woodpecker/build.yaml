@@ -1,0 +1,13 @@
+# Go build — goreleaser snapshot (no publish)
+when:
+  - event: pull_request
+  - event: push
+    branch: develop
+
+steps:
+  - name: snapshot
+    image: goreleaser/goreleaser:v2
+    environment:
+      CGO_ENABLED: "0"
+    commands:
+      - goreleaser build --clean --snapshot

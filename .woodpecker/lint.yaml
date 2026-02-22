@@ -1,0 +1,13 @@
+# Go lint — golangci-lint
+when:
+  - event: pull_request
+  - event: push
+    branch: develop
+
+steps:
+  - name: lint
+    image: golangci/golangci-lint:v1.64.8
+    environment:
+      CGO_ENABLED: "0"
+    commands:
+      - golangci-lint run --timeout 3m
