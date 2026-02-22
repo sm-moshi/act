@@ -9,13 +9,13 @@ task_run_auto_install  = true
 # Act upstream golangci config states "Minimum golangci-lint version required: v1.46.0"
 # Pin something modern (adjust later if Act CI pins differently).
 go            = "latest"
-golangci-lint = "1.64.6"
+golangci-lint = "1.64.8"
 
 # CI-style helpers Act uses
-actionlint = "1.7.10"
+actionlint = "1.7.11"
 gitleaks   = "8.27.2"
 node       = "22.14.0"
-python     = "3.13.1"
+python     = "3.13.12"
 
 # Use project-local prettier (via npx) but ensure node exists.
 # markdownlint-cli2 is Node-based; install/run via npx.
