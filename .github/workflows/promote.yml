@@ -21,7 +21,7 @@ jobs:
           token: ${{ secrets.PROMOTE_TOKEN }}
       - uses: fregante/setup-git-user@024bc0b8e177d7e77203b48dab6fb45666854b35 # v2
         if: steps.checkout.conclusion != 'skipped'
-      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
         if: steps.checkout.conclusion != 'skipped'
         with:
           go-version-file: go.mod
