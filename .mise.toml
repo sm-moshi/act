@@ -32,14 +32,14 @@ gofmt -w .
 description = "golangci-lint using .golangci.yml"
 run = """
 set -euo pipefail
-golangci-lint run -c .golangci.yml
+golangci-lint run -c .golangci.yml ./cmd/... ./pkg/... .
 """
 
 [tasks.lint-actions]
-description = "Lint GitHub Actions workflows"
+description = "Lint GitHub Actions workflows (excludes test-* fixtures)"
 run = """
 set -euo pipefail
-actionlint
+find .github/workflows -name '*.yml' ! -name 'test-*' -print0 | xargs -0 actionlint
 """
 
 [tasks.lint-secrets]
@@ -60,7 +60,7 @@ npx --yes prettier --config .prettierrc.yml --ignore-path .prettierignore --writ
 description = "markdownlint using upstream .markdownlint.yml"
 run = """
 set -euo pipefail
-npx --yes markdownlint-cli2 --config .markdownlint.yml "**/*.md"
+npx --yes markdownlint-cli2 --config .markdownlint.yml "**/*.md" "#.vscode" "#report" "#.venv" "#node_modules" "#**/node_modules"
 """
 
 [tasks.lint]

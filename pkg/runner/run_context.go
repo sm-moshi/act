@@ -274,7 +274,7 @@ func (rc *RunContext) startJobContainer() common.Executor {
 		logger.Infof("\U0001f680  Start image=%s", image)
 		name := rc.jobContainerName()
 
-		envList := make([]string, 0)
+		envList := make([]string, 0, 5)
 
 		envList = append(envList, fmt.Sprintf("%s=%s", "RUNNER_TOOL_CACHE", "/opt/hostedtoolcache"))
 		envList = append(envList, fmt.Sprintf("%s=%s", "RUNNER_OS", "Linux"))
@@ -411,7 +411,7 @@ func (rc *RunContext) startJobContainer() common.Executor {
 			Options:        rc.options(ctx),
 		})
 		if rc.JobContainer == nil {
-			return errors.New("Failed to create job container")
+			return errors.New("failed to create job container")
 		}
 
 		return common.NewPipelineExecutor(
@@ -561,7 +561,7 @@ func (rc *RunContext) stopJobContainer() common.Executor {
 
 func (rc *RunContext) pullServicesImages(forcePull bool) common.Executor {
 	return func(ctx context.Context) error {
-		execs := []common.Executor{}
+		execs := make([]common.Executor, 0, len(rc.ServiceContainers))
 		for _, c := range rc.ServiceContainers {
 			execs = append(execs, c.Pull(forcePull))
 		}
@@ -571,7 +571,7 @@ func (rc *RunContext) pullServicesImages(forcePull bool) common.Executor {
 
 func (rc *RunContext) startServiceContainers(_ string) common.Executor {
 	return func(ctx context.Context) error {
-		execs := []common.Executor{}
+		execs := make([]common.Executor, 0, len(rc.ServiceContainers))
 		for _, c := range rc.ServiceContainers {
 			execs = append(execs, common.NewPipelineExecutor(
 				c.Pull(false),
@@ -609,7 +609,7 @@ func (rc *RunContext) waitForServiceContainer(c container.ExecutionsEnvironment)
 
 func (rc *RunContext) waitForServiceContainers() common.Executor {
 	return func(ctx context.Context) error {
-		execs := []common.Executor{}
+		execs := make([]common.Executor, 0, len(rc.ServiceContainers))
 		for _, c := range rc.ServiceContainers {
 			execs = append(execs, rc.waitForServiceContainer(c))
 		}
@@ -619,7 +619,7 @@ func (rc *RunContext) waitForServiceContainers() common.Executor {
 
 func (rc *RunContext) stopServiceContainers() common.Executor {
 	return func(ctx context.Context) error {
-		execs := []common.Executor{}
+		execs := make([]common.Executor, 0, len(rc.ServiceContainers))
 		for _, c := range rc.ServiceContainers {
 			execs = append(execs, c.Remove().Finally(c.Close()))
 		}

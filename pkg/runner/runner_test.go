@@ -15,7 +15,6 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	assert "github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -372,8 +371,8 @@ type captureJobLoggerFactory struct {
 	buffer bytes.Buffer
 }
 
-func (factory *captureJobLoggerFactory) WithJobLogger() *logrus.Logger {
-	logger := logrus.New()
+func (factory *captureJobLoggerFactory) WithJobLogger() *log.Logger {
+	logger := log.New()
 	logger.SetOutput(&factory.buffer)
 	logger.SetLevel(log.TraceLevel)
 	logger.SetFormatter(&log.JSONFormatter{})
@@ -414,7 +413,7 @@ func TestPullAndPostStepFailureIsJobFailure(t *testing.T) {
 			}
 			config.ActionCache = table.ActionCache
 
-			logger := logrus.New()
+			logger := log.New()
 			logger.SetOutput(&factory.buffer)
 			logger.SetLevel(log.TraceLevel)
 			logger.SetFormatter(&log.JSONFormatter{})
@@ -484,7 +483,7 @@ func TestFetchFailureIsJobFailure(t *testing.T) {
 			}
 			config.ActionCache = &mockCache{}
 
-			logger := logrus.New()
+			logger := log.New()
 			logger.SetOutput(&factory.buffer)
 			logger.SetLevel(log.TraceLevel)
 			logger.SetFormatter(&log.JSONFormatter{})

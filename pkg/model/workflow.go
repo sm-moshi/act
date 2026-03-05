@@ -78,7 +78,7 @@ func (w *Workflow) UnmarshalYAML(node *yaml.Node) error {
 		Definition: "workflow-root",
 		Schema:     schema.GetWorkflowSchema(),
 	}).UnmarshalYAML(node); err != nil {
-		return errors.Join(err, fmt.Errorf("Actions YAML Schema Validation Error detected:\nFor more information, see: https://nektosact.com/usage/schema.html"))
+		return errors.Join(err, fmt.Errorf("actions YAML Schema Validation Error detected:\nFor more information, see: https://nektosact.com/usage/schema.html"))
 	}
 	type WorkflowDefault Workflow
 	return node.Decode((*WorkflowDefault)(w))
@@ -96,7 +96,7 @@ func (w *WorkflowStrict) UnmarshalYAML(node *yaml.Node) error {
 		Definition: "workflow-root-strict",
 		Schema:     schema.GetWorkflowSchema(),
 	}).UnmarshalYAML(node); err != nil {
-		return errors.Join(err, fmt.Errorf("Actions YAML Strict Schema Validation Error detected:\nFor more information, see: https://nektosact.com/usage/schema.html"))
+		return errors.Join(err, fmt.Errorf("actions YAML Strict Schema Validation Error detected:\nFor more information, see: https://nektosact.com/usage/schema.html"))
 	}
 	type WorkflowDefault Workflow
 	return node.Decode((*WorkflowDefault)(w))
@@ -740,7 +740,7 @@ func (w *Workflow) GetJob(jobID string) *Job {
 
 // GetJobIDs will get all the job names in the workflow
 func (w *Workflow) GetJobIDs() []string {
-	ids := make([]string, 0)
+	ids := make([]string, 0, len(w.Jobs))
 	for id := range w.Jobs {
 		ids = append(ids, id)
 	}

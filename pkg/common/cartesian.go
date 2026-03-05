@@ -2,8 +2,8 @@ package common
 
 // CartesianProduct takes map of lists and returns list of unique tuples
 func CartesianProduct(mapOfLists map[string][]interface{}) []map[string]interface{} {
-	listNames := make([]string, 0)
-	lists := make([][]interface{}, 0)
+	listNames := make([]string, 0, len(mapOfLists))
+	lists := make([][]interface{}, 0, len(mapOfLists))
 	for k, v := range mapOfLists {
 		listNames = append(listNames, k)
 		lists = append(lists, v)
@@ -11,7 +11,7 @@ func CartesianProduct(mapOfLists map[string][]interface{}) []map[string]interfac
 
 	listCart := cartN(lists...)
 
-	rtn := make([]map[string]interface{}, 0)
+	rtn := make([]map[string]interface{}, 0, len(listCart))
 	for _, list := range listCart {
 		vMap := make(map[string]interface{})
 		for i, v := range list {

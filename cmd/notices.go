@@ -104,7 +104,7 @@ func getVersionNotices(version string) []Notice {
 		saveNoticesEtag(newEtag)
 	}
 
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	notices := []Notice{}
 	if resp.StatusCode == 304 {
 		log.Debug("No new notices")

@@ -155,7 +155,7 @@ func configLocations() []string {
 func args() []string {
 	actrc := configLocations()
 
-	args := make([]string, 0)
+	args := make([]string, 0, len(actrc))
 	for _, f := range actrc {
 		args = append(args, readArgsFile(f, true)...)
 	}
@@ -409,7 +409,7 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 		if ret, err := container.GetSocketAndHost(input.containerDaemonSocket); err != nil {
 			log.Warnf("Couldn't get a valid docker connection: %+v", err)
 		} else {
-			os.Setenv("DOCKER_HOST", ret.Host)
+			_ = os.Setenv("DOCKER_HOST", ret.Host)
 			input.containerDaemonSocket = ret.Socket
 			log.Infof("Using docker host '%s', and daemon socket '%s'", ret.Host, ret.Socket)
 		}
@@ -557,7 +557,7 @@ func newRunCommand(ctx context.Context, input *Input) func(*cobra.Command, []str
 		}
 		if plan != nil {
 			if len(plan.Stages) == 0 {
-				plannerErr = fmt.Errorf("Could not find any stages to run. View the valid jobs with `act --list`. Use `act --help` to find how to filter by Job ID/Workflow/Event Name")
+				plannerErr = fmt.Errorf("could not find any stages to run. View the valid jobs with `act --list`. Use `act --help` to find how to filter by Job ID/Workflow/Event Name")
 			}
 		}
 		if plan == nil && plannerErr != nil {

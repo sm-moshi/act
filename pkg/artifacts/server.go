@@ -131,15 +131,15 @@ func uploads(router *httprouter.Router, baseDir string, fsys WriteFS) {
 		if err != nil {
 			panic(err)
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 
 		writer, ok := file.(io.Writer)
 		if !ok {
-			panic(errors.New("File is not writable"))
+			panic(errors.New("file is not writable"))
 		}
 
 		if req.Body == nil {
-			panic(errors.New("No body given"))
+			panic(errors.New("no body given"))
 		}
 
 		_, err = io.Copy(writer, req.Body)
@@ -186,7 +186,7 @@ func downloads(router *httprouter.Router, baseDir string, fsys fs.FS) {
 			panic(err)
 		}
 
-		var list []NamedFileContainerResourceURL
+		list := make([]NamedFileContainerResourceURL, 0, len(entries))
 		for _, entry := range entries {
 			list = append(list, NamedFileContainerResourceURL{
 				Name:                     entry.Name(),
@@ -311,7 +311,7 @@ func Serve(ctx context.Context, artifactPath string, addr string, port string) c
 
 		if err := server.Shutdown(ctx); err != nil {
 			logger.Errorf("Failed shutdown gracefully - force shutdown: %v", err)
-			server.Close()
+			_ = server.Close()
 		}
 	}()
 

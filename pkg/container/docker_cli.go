@@ -7,13 +7,14 @@
 // See DOCKER_LICENSE for the full license text.
 //
 
-//nolint:unparam,errcheck,depguard,deadcode,unused
+//nolint:unparam,errcheck,depguard,unused
 package container
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net"
 	"os"
 	"path"
 	"path/filepath"
@@ -332,7 +333,7 @@ func parse(flags *pflag.FlagSet, copts *containerOptions, serverOS string) (*con
 
 	// Validate the input mac address
 	if copts.macAddress != "" {
-		if _, err := opts.ValidateMACAddress(copts.macAddress); err != nil {
+		if _, err := net.ParseMAC(copts.macAddress); err != nil {
 			return nil, errors.Errorf("%s is not a valid mac address", copts.macAddress)
 		}
 	}

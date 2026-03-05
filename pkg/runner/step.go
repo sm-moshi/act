@@ -204,7 +204,8 @@ func runStepExecutor(step step, stage stepStage, executor common.Executor) commo
 			logger.WithFields(logrus.Fields{"executionTime": executionTime, "stepResult": stepResult.Outcome}).Infof("  \u274C  Failure - %s %s [%s]", stage, stepString, executionTime)
 		}
 		// Process Runner File Commands
-		ferrors := []error{err}
+		ferrors := make([]error, 0, 6)
+		ferrors = append(ferrors, err)
 		ferrors = append(ferrors, processRunnerEnvFileCommand(ctx, envFileCommand, rc, rc.setEnv))
 		ferrors = append(ferrors, processRunnerEnvFileCommand(ctx, stateFileCommand, rc, rc.saveState))
 		ferrors = append(ferrors, processRunnerEnvFileCommand(ctx, outputFileCommand, rc, rc.setOutput))

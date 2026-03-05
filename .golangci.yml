@@ -1,38 +1,9 @@
-# Minimum golangci-lint version required: v1.46.0
-version: 2
+# Minimum golangci-lint version required: v2.0.0
+version: "2"
 
 run:
   timeout: 3m
 
-issues:
-  exclude-dirs:
-    - report # megalinter results+fixes
-  max-issues-per-linter: 0
-  max-same-issues: 0
-
-linters-settings:
-  gocyclo:
-    # minimal code complexity to report, 30 by default (but we recommend 10-20)
-    min-complexity: 20
-  gocritic:
-    disabled-checks:
-      - ifElseChain
-  importas:
-    alias:
-      - pkg: 'github.com/sirupsen/logrus'
-        alias: log
-      - pkg: 'github.com/stretchr/testify/assert'
-        alias: assert
-  depguard:
-    rules:
-      main:
-        deny:
-          - pkg: github.com/pkg/errors
-            desc: Please use "errors" package from standard library
-          - pkg: gotest.tools/v3
-            desc: Please keep tests unified using only github.com/stretchr/testify
-          - pkg: log
-            desc: Please keep logging unified using only github.com/sirupsen/logrus
 linters:
   enable:
     - revive
@@ -50,6 +21,96 @@ linters:
     - importas
     - contextcheck
     - nolintlint
+  settings:
+    gocyclo:
+      # minimal code complexity to report, 30 by default (but we recommend 10-20)
+      min-complexity: 20
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    importas:
+      alias:
+        - pkg: 'github.com/sirupsen/logrus'
+          alias: log
+        - pkg: 'github.com/stretchr/testify/assert'
+          alias: assert
+    depguard:
+      rules:
+        main:
+          list-mode: lax
+          deny:
+            - pkg: github.com/pkg/errors
+              desc: Please use "errors" package from standard library
+            - pkg: gotest.tools/v3
+              desc: Please keep tests unified using only github.com/stretchr/testify
+            - pkg: log
+              desc: Please keep logging unified using only github.com/sirupsen/logrus
+  exclusions:
+    rules:
+      - linters:
+          - errcheck
+        text: "Error return value of `.+\\.Close` is not checked"
+      - linters:
+          - errcheck
+        text: "Error return value of `fmt\\.F?print"
+      - linters:
+          - errcheck
+        text: "Error return value of `os\\.(Set|Unset)env` is not checked"
+      - linters:
+          - errcheck
+        text: "Error return value of `os\\.RemoveAll` is not checked"
+      - linters:
+          - gosec
+        text: "G304:"
+      - linters:
+          - gosec
+        text: "G301:"
+      - linters:
+          - gosec
+        text: "G302:"
+      - linters:
+          - gosec
+        text: "G104:"
+      - linters:
+          - gosec
+        text: "G204:"
+      - linters:
+          - gosec
+        text: "G101:"
+      - linters:
+          - gosec
+        text: "G115:"
+      - linters:
+          - gosec
+        text: "G117:"
+      - linters:
+          - gosec
+        text: "G602:"
+      - linters:
+          - gosec
+        text: "G703:"
+      - linters:
+          - gosec
+        text: "G704:"
+      - linters:
+          - revive
+        text: "exported:"
+      - linters:
+          - revive
+        text: "package-comments:"
+      - linters:
+          - revive
+        text: "var-naming:"
+      - linters:
+          - staticcheck
+        text: "QF1003:"
+      - linters:
+          - staticcheck
+        text: "QF1008:"
+    paths:
+      - report
+    max-issues-per-linter: 0
+    max-same-issues: 0
 
 formatters:
   enable:

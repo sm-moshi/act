@@ -199,7 +199,7 @@ func runActionImpl(step actionStep, actionDir string, remoteAction *remoteAction
 
 			return execAsComposite(step)(ctx)
 		default:
-			return fmt.Errorf("The runs.using key must be one of: %v, got %s", []string{
+			return fmt.Errorf("the runs.using key must be one of: %v, got %s", []string{
 				model.ActionRunsUsingDocker,
 				model.ActionRunsUsingNode12,
 				model.ActionRunsUsingNode16,
@@ -396,7 +396,7 @@ func newStepContainer(ctx context.Context, step step, image string, cmd []string
 		}
 		return true
 	})
-	envList := make([]string, 0)
+	envList := make([]string, 0, len(*step.getEnv())+4)
 	for k, v := range *step.getEnv() {
 		envList = append(envList, fmt.Sprintf("%s=%s", k, v))
 	}
