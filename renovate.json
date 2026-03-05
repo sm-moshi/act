@@ -1,8 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-
-  "baseBranches": ["develop"],
-
+  "baseBranchPatterns": ["develop"],
   "extends": [
     "config:recommended",
     ":preserveSemverRanges",
@@ -10,32 +8,22 @@
     "helpers:pinGitHubActionDigests",
     ":disableRateLimiting"
   ],
-
   "platformAutomerge": false,
-
   "dependencyDashboard": true,
   "dependencyDashboardAutoclose": true,
-
   "timezone": "Europe/Berlin",
   "schedule": ["at any time"],
-
   "prHourlyLimit": 6,
   "prConcurrentLimit": 3,
   "rebaseWhen": "conflicted",
-
   "rangeStrategy": "bump",
-
   "labels": ["dependencies"],
-
   "enabledManagers": ["gomod", "github-actions", "dockerfile", "mise"],
-
   "ignorePaths": ["docs/**/vendor/**", "**/vendor/**", "**/testdata/**"],
-
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["at any time"]
   },
-
   "packageRules": [
     {
       "matchManagers": ["gomod"],
@@ -65,13 +53,11 @@
       "separateMinorPatch": true,
       "labels": ["dependencies", "tooling"]
     },
-
     {
       "matchUpdateTypes": ["major"],
       "labels": ["dependencies", "major"],
       "dependencyDashboardApproval": true
     },
-
     {
       "matchDepTypes": ["indirect"],
       "matchManagers": ["gomod"],
