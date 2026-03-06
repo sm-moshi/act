@@ -275,7 +275,7 @@ func (e *HostEnvironment) UpdateFromImageEnv(_ *map[string]string) common.Execut
 }
 
 func getEnvListFromMap(env map[string]string) []string {
-	envList := make([]string, 0)
+	envList := make([]string, 0, len(env))
 	for k, v := range env {
 		envList = append(envList, fmt.Sprintf("%s=%s", k, v))
 	}

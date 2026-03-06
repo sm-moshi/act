@@ -122,7 +122,7 @@ func (runner *runnerImpl) configure() (Runner, error) {
 func (runner *runnerImpl) NewPlanExecutor(plan *model.Plan) common.Executor {
 	maxJobNameLen := 0
 
-	stagePipeline := make([]common.Executor, 0)
+	stagePipeline := make([]common.Executor, 0, len(plan.Stages))
 	log.Debugf("Plan Stages: %v", plan.Stages)
 
 	for i := range plan.Stages {
@@ -223,7 +223,7 @@ func handleFailure(plan *model.Plan) common.Executor {
 		for _, stage := range plan.Stages {
 			for _, run := range stage.Runs {
 				if run.Job().Result == "failure" {
-					return fmt.Errorf("Job '%s' failed", run.String())
+					return fmt.Errorf("job '%s' failed", run.String())
 				}
 			}
 		}

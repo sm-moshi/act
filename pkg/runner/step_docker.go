@@ -102,7 +102,7 @@ func (sd *stepDocker) newStepContainer(ctx context.Context, image string, cmd []
 		}
 		return true
 	})
-	envList := make([]string, 0)
+	envList := make([]string, 0, len(sd.env)+4)
 	for k, v := range sd.env {
 		envList = append(envList, fmt.Sprintf("%s=%s", k, v))
 	}

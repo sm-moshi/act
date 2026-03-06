@@ -125,7 +125,7 @@ func newJobExecutor(info jobInfo, sf stepFactory, rc *RunContext) common.Executo
 		return nil
 	}
 
-	pipeline := make([]common.Executor, 0)
+	pipeline := make([]common.Executor, 0, len(preSteps)+len(steps))
 	pipeline = append(pipeline, preSteps...)
 	pipeline = append(pipeline, steps...)
 

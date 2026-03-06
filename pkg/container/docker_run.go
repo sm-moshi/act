@@ -363,30 +363,30 @@ func (cr *containerReference) mergeContainerConfigs(ctx context.Context, config 
 
 	optionsArgs, err := shellquote.Split(input.Options)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot split container options: '%s': '%w'", input.Options, err)
+		return nil, nil, fmt.Errorf("cannot split container options: '%s': '%w'", input.Options, err)
 	}
 
 	err = flags.Parse(optionsArgs)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot parse container options: '%s': '%w'", input.Options, err)
+		return nil, nil, fmt.Errorf("cannot parse container options: '%s': '%w'", input.Options, err)
 	}
 
 	if len(copts.netMode.Value()) == 0 {
 		if err = copts.netMode.Set(cr.input.NetworkMode); err != nil {
-			return nil, nil, fmt.Errorf("Cannot parse networkmode=%s. This is an internal error and should not happen: '%w'", cr.input.NetworkMode, err)
+			return nil, nil, fmt.Errorf("cannot parse networkmode=%s. This is an internal error and should not happen: '%w'", cr.input.NetworkMode, err)
 		}
 	}
 
 	containerConfig, err := parse(flags, copts, runtime.GOOS)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot process container options: '%s': '%w'", input.Options, err)
+		return nil, nil, fmt.Errorf("cannot process container options: '%s': '%w'", input.Options, err)
 	}
 
 	logger.Debugf("Custom container.Config from options ==> %+v", containerConfig.Config)
 
 	err = mergo.Merge(config, containerConfig.Config, mergo.WithOverride)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot merge container.Config options: '%s': '%w'", input.Options, err)
+		return nil, nil, fmt.Errorf("cannot merge container.Config options: '%s': '%w'", input.Options, err)
 	}
 	logger.Debugf("Merged container.Config ==> %+v", config)
 
@@ -398,7 +398,7 @@ func (cr *containerReference) mergeContainerConfigs(ctx context.Context, config 
 	mounts := hostConfig.Mounts
 	err = mergo.Merge(hostConfig, containerConfig.HostConfig, mergo.WithOverride)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Cannot merge container.HostConfig options: '%s': '%w'", input.Options, err)
+		return nil, nil, fmt.Errorf("cannot merge container.HostConfig options: '%s': '%w'", input.Options, err)
 	}
 	hostConfig.Binds = binds
 	hostConfig.Mounts = mounts
@@ -544,7 +544,7 @@ func (cr *containerReference) exec(cmd []string, env map[string]string, user, wo
 		logger := common.Logger(ctx)
 		// Fix slashes when running on Windows
 		if runtime.GOOS == "windows" {
-			var newCmd []string
+			newCmd := make([]string, 0, len(cmd))
 			for _, v := range cmd {
 				newCmd = append(newCmd, strings.ReplaceAll(v, `\`, `/`))
 			}
@@ -553,7 +553,7 @@ func (cr *containerReference) exec(cmd []string, env map[string]string, user, wo
 
 		logger.Debugf("Exec command '%s'", cmd)
 		isTerminal := term.IsTerminal(int(os.Stdout.Fd()))
-		envList := make([]string, 0)
+		envList := make([]string, 0, len(env))
 		for k, v := range env {
 			envList = append(envList, fmt.Sprintf("%s=%s", k, v))
 		}

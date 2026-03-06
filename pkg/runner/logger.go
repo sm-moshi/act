@@ -144,7 +144,7 @@ func withStepLogger(ctx context.Context, stepID string, stepName string, stageNa
 type entryProcessor func(entry *logrus.Entry) *logrus.Entry
 
 func valueMasker(insecureSecrets bool, secrets map[string]string) entryProcessor {
-	ssecrets := []string{}
+	ssecrets := make([]string, 0, len(secrets))
 	for _, v := range secrets {
 		ssecrets = append(ssecrets, v)
 	}
