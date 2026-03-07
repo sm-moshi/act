@@ -9,7 +9,7 @@ task_run_auto_install  = true
 # Act upstream golangci config states "Minimum golangci-lint version required: v1.46.0"
 # Pin something modern (adjust later if Act CI pins differently).
 go            = "latest"
-golangci-lint = "2.10.1"
+golangci-lint = "2.11.1"
 
 # CI-style helpers Act uses
 actionlint = "1.7.11"
