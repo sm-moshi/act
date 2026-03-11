@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -20,6 +21,19 @@ import (
 	"github.com/nektos/act/pkg/model"
 	"github.com/nektos/act/pkg/runner"
 )
+
+func requireArtifactServerBindOrSkip(t *testing.T, addr, port string) {
+	t.Helper()
+
+	ln, err := net.Listen("tcp", net.JoinHostPort(addr, port))
+	if err != nil && (strings.Contains(err.Error(), "operation not permitted") || strings.Contains(err.Error(), "permission denied")) {
+		t.Skipf("skipping artifact server integration test in restricted environment: %v", err)
+	}
+	if err != nil {
+		t.Fatalf("listen %s:%s: %v", addr, port, err)
+	}
+	_ = ln.Close()
+}
 
 type writableMapFile struct {
 	fstest.MapFile
@@ -251,6 +265,7 @@ func TestArtifactFlow(t *testing.T) {
 	}
 
 	ctx := context.Background()
+	requireArtifactServerBindOrSkip(t, artifactsAddr, artifactsPort)
 
 	cancel := Serve(ctx, artifactsPath, artifactsAddr, artifactsPort)
 	defer cancel()

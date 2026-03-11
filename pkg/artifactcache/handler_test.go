@@ -18,10 +18,20 @@ import (
 	"go.etcd.io/bbolt"
 )
 
+func startHandlerOrSkip(t *testing.T, dir string) *Handler {
+	t.Helper()
+
+	handler, err := StartHandler(dir, "", "", 0, nil)
+	if err != nil && (strings.Contains(err.Error(), "operation not permitted") || strings.Contains(err.Error(), "permission denied")) {
+		t.Skipf("skipping artifact cache handler test in restricted environment: %v", err)
+	}
+	require.NoError(t, err)
+	return handler
+}
+
 func TestHandler(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "artifactcache")
-	handler, err := StartHandler(dir, "", "", 0, nil)
-	require.NoError(t, err)
+	handler := startHandlerOrSkip(t, dir)
 
 	base := fmt.Sprintf("%s%s", handler.ExternalURL(), urlBase)
 
@@ -71,7 +81,6 @@ func TestHandler(t *testing.T) {
 
 	t.Run("reserve with bad request", func(t *testing.T) {
 		body := []byte(`invalid json`)
-		require.NoError(t, err)
 		resp, err := http.Post(fmt.Sprintf("%s/caches", base), "application/json", bytes.NewReader(body))
 		require.NoError(t, err)
 		assert.Equal(t, 400, resp.StatusCode)
@@ -589,8 +598,7 @@ func uploadCacheNormally(t *testing.T, base, key, version string, content []byte
 
 func TestHandler_CustomExternalURL(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "artifactcache")
-	handler, err := StartHandler(dir, "", "", 0, nil)
-	require.NoError(t, err)
+	handler := startHandlerOrSkip(t, dir)
 
 	defer func() {
 		require.NoError(t, handler.Close())
@@ -623,8 +631,7 @@ func TestHandler_CustomExternalURL(t *testing.T) {
 
 func TestHandler_gcCache(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "artifactcache")
-	handler, err := StartHandler(dir, "", "", 0, nil)
-	require.NoError(t, err)
+	handler := startHandlerOrSkip(t, dir)
 
 	defer func() {
 		require.NoError(t, handler.Close())

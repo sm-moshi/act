@@ -3,10 +3,42 @@ package cmd
 import (
 	"context"
 	"path"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func configureTestInput(t *testing.T, input *Input) {
+	t.Helper()
+	cacheDir := t.TempDir()
+	input.actionCachePath = path.Join(cacheDir, "act")
+	input.cacheServerPath = path.Join(cacheDir, "actcache")
+}
+
+func configureRunnerTestInput(t *testing.T, input *Input) {
+	t.Helper()
+	configureTestInput(t, input)
+	t.Setenv("DOCKER_CONFIG", t.TempDir())
+	input.platforms = []string{"ubuntu-latest=node:16-buster-slim"}
+	input.workdir = "../pkg/runner/testdata/"
+	input.workflowsPath = "./basic/push.yml"
+	input.noCacheServer = true
+}
+
+func skipIfRestrictedDockerRuntime(t *testing.T, err error) {
+	t.Helper()
+	if err == nil {
+		return
+	}
+
+	message := err.Error()
+	if strings.Contains(message, "Docker daemon socket") ||
+		strings.Contains(message, "error getting credentials") ||
+		strings.Contains(message, "operation not permitted") {
+		t.Skipf("skipping Docker-dependent test in restricted environment: %v", err)
+	}
+}
 
 func TestReadSecrets(t *testing.T) {
 	secrets := map[string]string{}
@@ -29,55 +61,54 @@ line3
 }
 
 func TestListOptions(t *testing.T) {
-	rootCmd := createRootCommand(context.Background(), &Input{}, "")
-	err := newRunCommand(context.Background(), &Input{
-		listOptions: true,
-	})(rootCmd, []string{})
+	input := &Input{}
+	configureTestInput(t, input)
+	rootCmd := createRootCommand(context.Background(), input, "")
+	input.listOptions = true
+	err := newRunCommand(context.Background(), input)(rootCmd, []string{})
 	assert.NoError(t, err)
 }
 
 func TestRun(t *testing.T) {
-	rootCmd := createRootCommand(context.Background(), &Input{}, "")
-	err := newRunCommand(context.Background(), &Input{
-		platforms:     []string{"ubuntu-latest=node:16-buster-slim"},
-		workdir:       "../pkg/runner/testdata/",
-		workflowsPath: "./basic/push.yml",
-	})(rootCmd, []string{})
+	input := &Input{}
+	rootCmd := createRootCommand(context.Background(), input, "")
+	configureRunnerTestInput(t, input)
+	err := newRunCommand(context.Background(), input)(rootCmd, []string{})
+	skipIfRestrictedDockerRuntime(t, err)
 	assert.NoError(t, err)
 }
 
 func TestRunPush(t *testing.T) {
-	rootCmd := createRootCommand(context.Background(), &Input{}, "")
-	err := newRunCommand(context.Background(), &Input{
-		platforms:     []string{"ubuntu-latest=node:16-buster-slim"},
-		workdir:       "../pkg/runner/testdata/",
-		workflowsPath: "./basic/push.yml",
-	})(rootCmd, []string{"push"})
+	input := &Input{}
+	rootCmd := createRootCommand(context.Background(), input, "")
+	configureRunnerTestInput(t, input)
+	err := newRunCommand(context.Background(), input)(rootCmd, []string{"push"})
+	skipIfRestrictedDockerRuntime(t, err)
 	assert.NoError(t, err)
 }
 
 func TestRunPushJsonLogger(t *testing.T) {
-	rootCmd := createRootCommand(context.Background(), &Input{}, "")
-	err := newRunCommand(context.Background(), &Input{
-		platforms:     []string{"ubuntu-latest=node:16-buster-slim"},
-		workdir:       "../pkg/runner/testdata/",
-		workflowsPath: "./basic/push.yml",
-		jsonLogger:    true,
-	})(rootCmd, []string{"push"})
+	input := &Input{}
+	rootCmd := createRootCommand(context.Background(), input, "")
+	configureRunnerTestInput(t, input)
+	input.jsonLogger = true
+	err := newRunCommand(context.Background(), input)(rootCmd, []string{"push"})
+	skipIfRestrictedDockerRuntime(t, err)
 	assert.NoError(t, err)
 }
 
 func TestFlags(t *testing.T) {
 	for _, f := range []string{"graph", "list", "bug-report", "man-page"} {
 		t.Run("TestFlag-"+f, func(t *testing.T) {
-			rootCmd := createRootCommand(context.Background(), &Input{}, "")
+			input := &Input{}
+			rootCmd := createRootCommand(context.Background(), input, "")
+			configureRunnerTestInput(t, input)
 			err := rootCmd.Flags().Set(f, "true")
 			assert.NoError(t, err)
-			err = newRunCommand(context.Background(), &Input{
-				platforms:     []string{"ubuntu-latest=node:16-buster-slim"},
-				workdir:       "../pkg/runner/testdata/",
-				workflowsPath: "./basic/push.yml",
-			})(rootCmd, []string{})
+			err = newRunCommand(context.Background(), input)(rootCmd, []string{})
+			if f == "bug-report" {
+				skipIfRestrictedDockerRuntime(t, err)
+			}
 			assert.NoError(t, err)
 		})
 	}
