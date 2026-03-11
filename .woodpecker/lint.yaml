@@ -5,11 +5,6 @@ when:
   - event: push
     branch: develop
 
-clone:
-  git:
-    settings:
-      depth: 0
-
 steps:
   - name: lint
     image: harbor.m0sh1.cc/hub/golangci/golangci-lint:v2.11.3
@@ -21,6 +16,8 @@ steps:
         if [ "${CI_PIPELINE_EVENT}" = "pull_request" ]; then
           git fetch origin "${CI_COMMIT_TARGET_BRANCH}" --depth=1
           REV="origin/${CI_COMMIT_TARGET_BRANCH}"
+        elif git fetch --unshallow 2>/dev/null && git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+          REV="HEAD~1"
         elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
           REV="HEAD~1"
         fi
