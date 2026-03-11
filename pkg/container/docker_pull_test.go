@@ -2,6 +2,8 @@ package container
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/docker/cli/cli/config"
@@ -36,10 +38,21 @@ func TestCleanImage(t *testing.T) {
 
 func TestGetImagePullOptions(t *testing.T) {
 	ctx := context.Background()
+	originalConfigDir := config.Dir()
+	t.Cleanup(func() {
+		config.SetDir(originalConfigDir)
+	})
 
-	config.SetDir("/non-existent/docker")
+	emptyConfigDir := filepath.Join(t.TempDir(), "docker")
+	err := os.MkdirAll(emptyConfigDir, 0o755)
+	assert.Nil(t, err, "Failed to create temporary docker config directory")
+	err = os.WriteFile(filepath.Join(emptyConfigDir, "config.json"), []byte(`{"auths":{"example.invalid":{"auth":"dXNlcjpwYXNz"}}}`), 0o600)
+	assert.Nil(t, err, "Failed to create temporary docker config")
+	config.SetDir(emptyConfigDir)
 
-	options, err := getImagePullOptions(ctx, NewDockerPullExecutorInput{})
+	options, err := getImagePullOptions(ctx, NewDockerPullExecutorInput{
+		Image: "alpine:latest",
+	})
 	assert.Nil(t, err, "Failed to create ImagePullOptions")
 	assert.Equal(t, "", options.RegistryAuth, "RegistryAuth should be empty if no username or password is set")
 

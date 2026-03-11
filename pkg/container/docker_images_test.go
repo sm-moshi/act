@@ -2,7 +2,9 @@ package container
 
 import (
 	"context"
+	"fmt"
 	"io"
+	"runtime"
 	"testing"
 
 	"github.com/docker/docker/api/types/image"
@@ -48,20 +50,23 @@ func TestImageExistsLocally(t *testing.T) {
 	_, err = io.ReadAll(readerDefault)
 	assert.Nil(t, err)
 
-	imageDefaultArchExists, err := ImageExistsLocally(ctx, "node:16-buster-slim", "linux/amd64")
+	inspectImage, err := cli.ImageInspect(ctx, "node:16-buster-slim")
+	assert.Nil(t, err)
+
+	actualPlatform := fmt.Sprintf("%s/%s", inspectImage.Os, inspectImage.Architecture)
+	imageDefaultArchExists, err := ImageExistsLocally(ctx, "node:16-buster-slim", actualPlatform)
 	assert.Nil(t, err)
 	assert.Equal(t, true, imageDefaultArchExists)
 
-	// Validate if another architecture platform can be pulled
-	readerArm64, err := cli.ImagePull(ctx, "node:16-buster-slim", image.PullOptions{
-		Platform: "linux/arm64",
-	})
-	assert.Nil(t, err)
-	defer readerArm64.Close()
-	_, err = io.ReadAll(readerArm64)
-	assert.Nil(t, err)
+	mismatchedPlatform := "linux/amd64"
+	if actualPlatform == mismatchedPlatform {
+		mismatchedPlatform = "linux/arm64"
+	}
+	if runtime.GOOS == "windows" && actualPlatform == mismatchedPlatform {
+		mismatchedPlatform = "windows/amd64"
+	}
 
-	imageArm64Exists, err := ImageExistsLocally(ctx, "node:16-buster-slim", "linux/arm64")
+	imageArm64Exists, err := ImageExistsLocally(ctx, "node:16-buster-slim", mismatchedPlatform)
 	assert.Nil(t, err)
-	assert.Equal(t, true, imageArm64Exists)
+	assert.Equal(t, false, imageArm64Exists)
 }
