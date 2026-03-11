@@ -7,7 +7,7 @@ when:
 
 steps:
   - name: test
-    image: harbor.m0sh1.cc/hub/library/golang:1.24
+    image: harbor.m0sh1.cc/hub/library/golang:1.26.1
     environment:
       CGO_ENABLED: "0"
     commands:
