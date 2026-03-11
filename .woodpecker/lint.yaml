@@ -5,10 +5,27 @@ when:
   - event: push
     branch: develop
 
+clone:
+  git:
+    settings:
+      depth: 0
+
 steps:
   - name: lint
-    image: harbor.m0sh1.cc/hub/golangci/golangci-lint:v2.10.1
+    image: harbor.m0sh1.cc/hub/golangci/golangci-lint:v2.11.3
     environment:
       CGO_ENABLED: "0"
     commands:
-      - golangci-lint run --timeout 3m --new-from-rev=HEAD~1
+      - |
+        REV=""
+        if [ "${CI_PIPELINE_EVENT}" = "pull_request" ]; then
+          git fetch origin "${CI_COMMIT_TARGET_BRANCH}" --depth=1
+          REV="origin/${CI_COMMIT_TARGET_BRANCH}"
+        elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+          REV="HEAD~1"
+        fi
+        if [ -n "$REV" ]; then
+          golangci-lint run --timeout 3m --new-from-rev="$REV"
+        else
+          golangci-lint run --timeout 3m
+        fi

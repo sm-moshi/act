@@ -10,7 +10,7 @@
   ],
   "platformAutomerge": false,
   "dependencyDashboard": true,
-  "dependencyDashboardAutoclose": true,
+  "dependencyDashboardAutoclose": false,
   "timezone": "Europe/Berlin",
   "schedule": ["at any time"],
   "prHourlyLimit": 6,
@@ -63,6 +63,15 @@
       "matchManagers": ["gomod"],
       "labels": ["dependencies", "go", "indirect"],
       "prPriority": -1
+    },
+    {
+      "description": "Docker CLI/Engine major upgrades require manual code migration (moby module split)",
+      "matchPackageNames": [
+        "github.com/docker/cli",
+        "github.com/docker/docker"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }

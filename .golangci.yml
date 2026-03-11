@@ -1,5 +1,5 @@
 # Minimum golangci-lint version required: v2.0.0
-version: "2"
+version: '2'
 
 run:
   timeout: 3m
@@ -61,52 +61,52 @@ linters:
         text: "Error return value of `os\\.RemoveAll` is not checked"
       - linters:
           - gosec
-        text: "G304:"
+        text: 'G304:'
       - linters:
           - gosec
-        text: "G301:"
+        text: 'G301:'
       - linters:
           - gosec
-        text: "G302:"
+        text: 'G302:'
       - linters:
           - gosec
-        text: "G104:"
+        text: 'G104:'
       - linters:
           - gosec
-        text: "G204:"
+        text: 'G204:'
       - linters:
           - gosec
-        text: "G101:"
+        text: 'G101:'
       - linters:
           - gosec
-        text: "G115:"
+        text: 'G115:'
       - linters:
           - gosec
-        text: "G117:"
+        text: 'G117:'
       - linters:
           - gosec
-        text: "G602:"
+        text: 'G602:'
       - linters:
           - gosec
-        text: "G703:"
+        text: 'G703:'
       - linters:
           - gosec
-        text: "G704:"
+        text: 'G704:'
       - linters:
           - revive
-        text: "exported:"
+        text: 'exported:'
       - linters:
           - revive
-        text: "package-comments:"
+        text: 'package-comments:'
       - linters:
           - revive
-        text: "var-naming:"
+        text: 'var-naming:'
       - linters:
           - staticcheck
-        text: "QF1003:"
+        text: 'QF1003:'
       - linters:
           - staticcheck
-        text: "QF1008:"
+        text: 'QF1008:'
     paths:
       - report
     max-issues-per-linter: 0

@@ -73,6 +73,62 @@ run = [
 	"mise run lint-secrets",
 ]
 
+[tasks.build]
+description = "Build act binary to dist/local/act"
+run = """
+set -euo pipefail
+VERSION=$(git describe --tags --dirty --always 2>/dev/null | sed 's/^v//' || cat VERSION)
+go build -ldflags "-X main.version=${VERSION}" -o dist/local/act main.go
+"""
+
+[tasks.test]
+description = "Run all Go tests (matches Makefile 'go test ./...')"
+run = """
+set -euo pipefail
+go test ./cmd/... ./pkg/...
+"""
+
+[tasks.test-short]
+description = "Run Go tests in short mode (skip slow/integration tests)"
+run = """
+set -euo pipefail
+go test -short ./cmd/... ./pkg/...
+"""
+
+[tasks.test-run]
+description = "Run a specific test by name: mise run test-run TestName"
+usage = "test-run <test_name>"
+run = """
+set -euo pipefail
+go test -v -run "${1:?usage: mise run test-run TestName}" ./cmd/... ./pkg/...
+"""
+
+[tasks.tidy]
+description = "Run go mod tidy"
+run = """
+set -euo pipefail
+go mod tidy
+"""
+
+[tasks.install]
+description = "Build and install act to /usr/local/bin"
+depends = ["build"]
+run = """
+set -euo pipefail
+cp dist/local/act /usr/local/bin/act
+chmod 755 /usr/local/bin/act
+act --version
+"""
+
+[tasks.pr]
+description = "Full PR prep: tidy, format, lint, test"
+run = [
+	"mise run tidy",
+	"mise run fmt-go",
+	"mise run lint",
+	"mise run test",
+]
+
 [tasks.py-venv]
 description = "Create/update local Python venv for repo tooling"
 run = """
