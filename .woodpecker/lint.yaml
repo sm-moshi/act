@@ -1,4 +1,4 @@
-# Go lint — golangci-lint
+# Go vet — built-in static analysis
 when:
   - event: manual
   - event: pull_request
@@ -25,27 +25,15 @@ steps:
       mount:
         - .go-mod-cache
 
-  - name: lint
-    image: golangci/golangci-lint:v2.11.3
+  - name: vet
+    image: dhi.io/golang:1.26.1-dev
     environment:
       CGO_ENABLED: "0"
       GOMODCACHE: /woodpecker/src/sm-moshi/act/.go-mod-cache
     commands:
-      - |
-        REV=""
-        if [ "${CI_PIPELINE_EVENT}" = "pull_request" ]; then
-          git fetch origin "${CI_COMMIT_TARGET_BRANCH}" --depth=1
-          REV="origin/${CI_COMMIT_TARGET_BRANCH}"
-        elif git fetch --unshallow 2>/dev/null && git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
-          REV="HEAD~1"
-        elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
-          REV="HEAD~1"
-        fi
-        if [ -n "$REV" ]; then
-          golangci-lint run --timeout 10m --new-from-rev="$REV"
-        else
-          golangci-lint run --timeout 10m
-        fi
+      - go vet ./...
+      - go install honnef.co/go/tools/cmd/staticcheck@latest
+      - staticcheck ./...
 
   - name: rebuild-cache
     failure: ignore
