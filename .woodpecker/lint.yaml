@@ -6,10 +6,29 @@ when:
     branch: develop
 
 steps:
+  - name: restore-cache
+    image: meltwater/drone-cache
+    settings:
+      backend: s3
+      endpoint:
+        from_secret: garage_s3_endpoint
+      access-key:
+        from_secret: garage_s3_access_key
+      secret-key:
+        from_secret: garage_s3_secret_key
+      region: garage
+      bucket: buildkit-cache
+      path-style: true
+      restore: true
+      cache_key: "act-go-{{ checksum \"go.sum\" }}"
+      mount:
+        - .go-mod-cache
+
   - name: lint
     image: golangci/golangci-lint:v2.11.3
     environment:
       CGO_ENABLED: "0"
+      GOMODCACHE: /woodpecker/src/sm-moshi/act/.go-mod-cache
     commands:
       - |
         REV=""
@@ -26,3 +45,23 @@ steps:
         else
           golangci-lint run --timeout 3m
         fi
+
+  - name: rebuild-cache
+    image: meltwater/drone-cache
+    settings:
+      backend: s3
+      endpoint:
+        from_secret: garage_s3_endpoint
+      access-key:
+        from_secret: garage_s3_access_key
+      secret-key:
+        from_secret: garage_s3_secret_key
+      region: garage
+      bucket: buildkit-cache
+      path-style: true
+      rebuild: true
+      cache_key: "act-go-{{ checksum \"go.sum\" }}"
+      mount:
+        - .go-mod-cache
+    when:
+      - status: [success, failure]
