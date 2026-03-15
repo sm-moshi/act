@@ -28,7 +28,7 @@ steps:
         - .go-mod-cache
 
   - name: snapshot
-    image: goreleaser/goreleaser:v2.14.0
+    image: goreleaser/goreleaser:v2.14.3
     environment:
       CGO_ENABLED: "0"
       GOMODCACHE: /woodpecker/src/github.com/sm-moshi/act/.go-mod-cache

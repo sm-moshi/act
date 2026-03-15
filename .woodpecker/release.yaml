@@ -5,7 +5,7 @@ when:
 
 steps:
   - name: release
-    image: goreleaser/goreleaser:v2.14.0
+    image: goreleaser/goreleaser:v2.14.3
     environment:
       CGO_ENABLED: "0"
       GITHUB_TOKEN:
