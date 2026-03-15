@@ -1,4 +1,5 @@
 # Go vet — built-in static analysis
+# Runs first (fast fail) — build and test depend on this
 when:
   - event: manual
   - event: pull_request

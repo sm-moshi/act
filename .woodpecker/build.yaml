@@ -1,4 +1,6 @@
 # Go build — goreleaser snapshot (no publish)
+depends_on:
+  - test
 when:
   - event: manual
   - event: pull_request

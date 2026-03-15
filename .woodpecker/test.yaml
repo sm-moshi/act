@@ -1,4 +1,6 @@
 # Go test — unit tests with coverage
+depends_on:
+  - lint
 when:
   - event: manual
   - event: pull_request
