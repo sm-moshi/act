@@ -10,20 +10,7 @@ builds:
       - linux
     goarch:
       - amd64
-      - '386'
       - arm64
-      - arm
-      - riscv64
-    goarm:
-      - '6'
-      - '7'
-    ignore:
-      - goos: darwin
-        goarch: '386'
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: riscv64
 checksum:
   name_template: 'checksums.txt'
 archives:
@@ -31,9 +18,7 @@ archives:
       {{ .ProjectName }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
       - goos: windows
         formats: [zip]
