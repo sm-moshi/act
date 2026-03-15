@@ -7,7 +7,7 @@ when:
 
 steps:
   - name: test
-    image: harbor.m0sh1.cc/hub/library/golang:1.26.1
+    image: dhi.io/golang:1.26.1-dev
     environment:
       CGO_ENABLED: "0"
     commands:
