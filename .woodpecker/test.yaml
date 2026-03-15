@@ -29,7 +29,7 @@ steps:
     image: dhi.io/golang:1.26.1-dev
     environment:
       CGO_ENABLED: "0"
-      GOMODCACHE: /woodpecker/src/sm-moshi/act/.go-mod-cache
+      GOMODCACHE: /woodpecker/src/github.com/sm-moshi/act/.go-mod-cache
     commands:
       - go test -v -cover -coverprofile=coverage.txt -covermode=atomic -timeout 20m $(go list ./... | grep -v '/pkg/container' | grep -v '/pkg/runner' | grep -v '/pkg/artifacts' | grep -v '/cmd')
 

@@ -29,7 +29,7 @@ steps:
     image: goreleaser/goreleaser:v2.14.0
     environment:
       CGO_ENABLED: "0"
-      GOMODCACHE: /woodpecker/src/sm-moshi/act/.go-mod-cache
+      GOMODCACHE: /woodpecker/src/github.com/sm-moshi/act/.go-mod-cache
     commands:
       - goreleaser build --clean --snapshot
 

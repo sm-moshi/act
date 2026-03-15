@@ -29,7 +29,7 @@ steps:
     image: dhi.io/golang:1.26.1-dev
     environment:
       CGO_ENABLED: "0"
-      GOMODCACHE: /woodpecker/src/sm-moshi/act/.go-mod-cache
+      GOMODCACHE: /woodpecker/src/github.com/sm-moshi/act/.go-mod-cache
     commands:
       - go vet ./...
       - go install honnef.co/go/tools/cmd/staticcheck@latest
