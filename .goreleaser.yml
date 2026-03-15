@@ -8,7 +8,6 @@ builds:
     goos:
       - darwin
       - linux
-      - windows
     goarch:
       - amd64
       - '386'
@@ -19,14 +18,10 @@ builds:
       - '6'
       - '7'
     ignore:
-      - goos: windows
-        goarch: arm
       - goos: darwin
         goarch: '386'
       - goos: darwin
         goarch: arm
-      - goos: windows
-        goarch: riscv64
       - goos: darwin
         goarch: riscv64
 checksum:
