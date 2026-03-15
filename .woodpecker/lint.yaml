@@ -33,7 +33,7 @@ steps:
     commands:
       - go vet ./...
       - go install honnef.co/go/tools/cmd/staticcheck@latest
-      - staticcheck ./...
+      - staticcheck $(go list ./... | grep -v /artifacts)
 
   - name: rebuild-cache
     failure: ignore

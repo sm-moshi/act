@@ -302,7 +302,7 @@ func TestParseWithMacAddress(t *testing.T) {
 	}
 	config, hostConfig, _ := mustParse(t, validMacAddress)
 	fmt.Printf("MacAddress: %+v\n", hostConfig)
-	assert.Equal(t, "92:d0:c6:0a:29:33", config.MacAddress) //nolint:staticcheck
+	assert.Equal(t, "92:d0:c6:0a:29:33", config.MacAddress) //lint:ignore SA1019 deprecated but needed for backward compat
 }
 
 func TestRunFlagsParseWithMemory(t *testing.T) {
