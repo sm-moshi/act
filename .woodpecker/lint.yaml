@@ -7,6 +7,7 @@ when:
 
 steps:
   - name: restore-cache
+    failure: ignore
     image: meltwater/drone-cache
     settings:
       backend: s3
@@ -47,6 +48,7 @@ steps:
         fi
 
   - name: rebuild-cache
+    failure: ignore
     image: meltwater/drone-cache
     settings:
       backend: s3
