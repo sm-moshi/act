@@ -20,3 +20,8 @@ steps:
       - go vet ./...
       - go install honnef.co/go/tools/cmd/staticcheck@latest
       - staticcheck $(go list ./... | grep -v /artifacts)
+
+  - name: codespell
+    image: dhi.io/uv:0.10.11-debian13-dev@sha256:ffee3a3d042dca591b928ed5fa7b200ba6fa30f3f46c166665ce0c97198bf0ef
+    commands:
+      - uv tool run codespell

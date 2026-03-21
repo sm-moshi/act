@@ -1,0 +1,23 @@
+# Monthly promote — bumps VERSION on master and tags the release
+when:
+  - event: cron
+    cron: monthly-promote
+  - event: manual
+
+steps:
+  - name: promote
+    image: dhi.io/golang:1.26.1-debian13-dev@sha256:2eaf3936008b4a31091eda26511748c1b872925fa5f674f13fbf5b53e7e777c2
+    volumes:
+      - woodpecker-pipeline-cache:/woodpecker/cache
+    environment:
+      CGO_ENABLED: "0"
+      GOMODCACHE: /woodpecker/cache/act/go-mod
+      GOCACHE: /woodpecker/cache/act/go-build
+      PROMOTE_TOKEN:
+        from_secret: promote_token
+    commands:
+      - mkdir -p "$GOMODCACHE" "$GOCACHE"
+      - git config user.name "woodpecker[bot]"
+      - git config user.email "woodpecker@m0sh1.cc"
+      - git remote set-url origin "https://x-access-token:${PROMOTE_TOKEN}@github.com/sm-moshi/act.git"
+      - make promote
