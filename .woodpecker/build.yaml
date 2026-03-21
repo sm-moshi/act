@@ -12,6 +12,10 @@ steps:
     image: goreleaser/goreleaser:v2.14.3
     volumes:
       - woodpecker-pipeline-cache:/woodpecker/cache
+    backend_options:
+      kubernetes:
+        securityContext:
+          fsGroupChangePolicy: OnRootMismatch
     environment:
       CGO_ENABLED: "0"
       GOMODCACHE: /woodpecker/cache/act/go-mod

@@ -12,6 +12,10 @@ steps:
     image: dhi.io/golang:1.26.1-debian13-dev@sha256:2eaf3936008b4a31091eda26511748c1b872925fa5f674f13fbf5b53e7e777c2
     volumes:
       - woodpecker-pipeline-cache:/woodpecker/cache
+    backend_options:
+      kubernetes:
+        securityContext:
+          fsGroupChangePolicy: OnRootMismatch
     environment:
       CGO_ENABLED: "0"
       GOMODCACHE: /woodpecker/cache/act/go-mod
