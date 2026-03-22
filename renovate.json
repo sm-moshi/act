@@ -1,36 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranchPatterns": ["develop"],
   "extends": [
-    "config:recommended",
+    "config:best-practices",
     ":preserveSemverRanges",
-    "group:allNonMajor",
     "helpers:pinGitHubActionDigests",
     ":disableRateLimiting"
   ],
-  "platformAutomerge": false,
-  "dependencyDashboard": true,
-  "dependencyDashboardAutoclose": false,
-  "timezone": "Europe/Berlin",
-  "schedule": ["at any time"],
-  "prHourlyLimit": 6,
-  "prConcurrentLimit": 3,
+  "baseBranchPatterns": ["develop"],
   "rebaseWhen": "conflicted",
   "rangeStrategy": "bump",
-  "labels": ["dependencies"],
   "enabledManagers": ["gomod", "github-actions", "dockerfile", "mise", "woodpecker"],
   "ignorePaths": ["docs/**/vendor/**", "**/vendor/**", "**/testdata/**"],
   "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": ["at any time"]
+    "enabled": true
   },
   "packageRules": [
-    {
-      "description": "DHI image versioning: variant-locked via compatibility group",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/^dhi\\.io\\//"],
-      "versioning": "regex:^(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-(?<compatibility>.+))?$"
-    },
     {
       "matchManagers": ["gomod"],
       "groupName": "Go dependencies",
