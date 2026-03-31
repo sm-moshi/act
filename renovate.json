@@ -6,6 +6,7 @@
     "helpers:pinGitHubActionDigests",
     ":disableRateLimiting"
   ],
+  "abandonmentThreshold": 730,
   "baseBranchPatterns": ["develop"],
   "rebaseWhen": "conflicted",
   "rangeStrategy": "bump",
