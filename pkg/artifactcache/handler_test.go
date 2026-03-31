@@ -18,22 +18,12 @@ import (
 	"go.etcd.io/bbolt"
 )
 
-func startHandlerOrSkip(t *testing.T, dir string) *Handler {
-	t.Helper()
-
-	handler, err := StartHandler(dir, "", "", 0, nil)
-	if err != nil && (strings.Contains(err.Error(), "operation not permitted") || strings.Contains(err.Error(), "permission denied")) {
-		t.Skipf("skipping artifact cache handler test in restricted environment: %v", err)
-	}
-	require.NoError(t, err)
-	return handler
-}
-
 func TestHandler(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "artifactcache")
-	handler := startHandlerOrSkip(t, dir)
+	handler, err := StartHandler(dir, "", "", 0, nil)
+	require.NoError(t, err)
 
-	base := fmt.Sprintf("%s%s", handler.ExternalURL(), urlBase)
+	base := fmt.Sprintf("%s%s", handler.ExternalURL(), apiPath)
 
 	defer func() {
 		t.Run("inpect db", func(t *testing.T) {
@@ -81,6 +71,7 @@ func TestHandler(t *testing.T) {
 
 	t.Run("reserve with bad request", func(t *testing.T) {
 		body := []byte(`invalid json`)
+		require.NoError(t, err)
 		resp, err := http.Post(fmt.Sprintf("%s/caches", base), "application/json", bytes.NewReader(body))
 		require.NoError(t, err)
 		assert.Equal(t, 400, resp.StatusCode)
@@ -598,7 +589,8 @@ func uploadCacheNormally(t *testing.T, base, key, version string, content []byte
 
 func TestHandler_CustomExternalURL(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "artifactcache")
-	handler := startHandlerOrSkip(t, dir)
+	handler, err := StartHandler(dir, "", "127.0.0.1", 0, nil)
+	require.NoError(t, err)
 
 	defer func() {
 		require.NoError(t, handler.Close())
@@ -606,9 +598,9 @@ func TestHandler_CustomExternalURL(t *testing.T) {
 
 	handler.customExternalURL = fmt.Sprintf("http://%s:%d", "127.0.0.1", handler.GetActualPort())
 
-	assert.Equal(t, fmt.Sprintf("http://%s:%d", "127.0.0.1", handler.GetActualPort()), handler.ExternalURL())
+	assert.Equal(t, fmt.Sprintf("http://%s:%d/%s", "127.0.0.1", handler.GetActualPort(), handler.token), handler.ExternalURL())
 
-	base := fmt.Sprintf("%s%s", handler.ExternalURL(), urlBase)
+	base := fmt.Sprintf("%s%s", handler.ExternalURL(), apiPath)
 
 	t.Run("advertise url set wrong", func(t *testing.T) {
 		original := handler.customExternalURL
@@ -616,7 +608,7 @@ func TestHandler_CustomExternalURL(t *testing.T) {
 			handler.customExternalURL = original
 		}()
 		handler.customExternalURL = "http://127.0.0.999:1234"
-		assert.Equal(t, "http://127.0.0.999:1234", handler.ExternalURL())
+		assert.Equal(t, "http://127.0.0.999:1234/"+handler.token, handler.ExternalURL())
 	})
 
 	t.Run("reserve and upload", func(t *testing.T) {
@@ -631,7 +623,8 @@ func TestHandler_CustomExternalURL(t *testing.T) {
 
 func TestHandler_gcCache(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "artifactcache")
-	handler := startHandlerOrSkip(t, dir)
+	handler, err := StartHandler(dir, "", "", 0, nil)
+	require.NoError(t, err)
 
 	defer func() {
 		require.NoError(t, handler.Close())
@@ -735,4 +728,34 @@ func TestHandler_gcCache(t *testing.T) {
 		})
 	}
 	require.NoError(t, db.Close())
+}
+
+func TestHandler_UnauthorizedAccess(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "artifactcache")
+	handler, err := StartHandler(dir, "", "", 0, nil)
+	require.NoError(t, err)
+	defer handler.Close()
+
+	// Try accessing without the token prefix — should get 404
+	noTokenBase := fmt.Sprintf("http://%s:%d%s", handler.outboundIP, handler.GetActualPort(), apiPath)
+
+	resp, err := http.Get(fmt.Sprintf("%s/cache?keys=test&version=abc", noTokenBase))
+	require.NoError(t, err)
+	assert.Equal(t, 404, resp.StatusCode)
+	resp.Body.Close()
+
+	resp, err = http.Post(fmt.Sprintf("%s/caches", noTokenBase), "application/json", strings.NewReader("{}"))
+	require.NoError(t, err)
+	assert.Equal(t, 404, resp.StatusCode)
+	resp.Body.Close()
+}
+
+func TestHandler_BindAddress(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "artifactcache")
+	handler, err := StartHandler(dir, "", "127.0.0.1", 0, nil)
+	require.NoError(t, err)
+	defer handler.Close()
+
+	addr := handler.listener.Addr().String()
+	assert.True(t, strings.HasPrefix(addr, "127.0.0.1:"))
 }
