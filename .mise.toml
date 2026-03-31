@@ -11,9 +11,9 @@ go            = "1.26.1"
 golangci-lint = "2.11.4"
 
 # CI-style helpers Act uses
-actionlint = "1.7.11"
+actionlint = "1.7.12"
 gitleaks   = "8.30.1"
-node       = "24.14.0"
+node       = "24.14.1"
 python     = "3.14.3"
 
 # Use project-local prettier (via npx) but ensure node exists.
