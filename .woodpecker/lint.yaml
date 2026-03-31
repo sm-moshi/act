@@ -22,6 +22,6 @@ steps:
       - staticcheck $(go list ./... | grep -v /artifacts)
 
   - name: codespell
-    image: dhi.io/uv:0.10.12-debian13-dev@sha256:a4c2324a43507ab837772760ef2a76a38703d10437272a85e65328903f4b176e
+    image: dhi.io/uv:0.11.2-debian13-dev@sha256:3c25f5686bec7a070425cbcec23f76fe6b3b3061b77a3dd05bf6b9705a8f36c4
     commands:
       - uv tool run codespell
