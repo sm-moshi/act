@@ -40,7 +40,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/go-cmp v0.7.0
 	github.com/moby/go-archive v0.2.0
-	github.com/moby/moby/api v1.54.0
+	github.com/moby/moby/api v1.54.1
 	github.com/moby/moby/client v0.3.0
 	google.golang.org/protobuf v1.36.11
 	tags.cncf.io/container-device-interface v1.1.0
