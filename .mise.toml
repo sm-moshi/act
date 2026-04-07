@@ -14,7 +14,7 @@ golangci-lint = "2.11.4"
 actionlint = "1.7.12"
 gitleaks   = "8.30.1"
 node       = "24.14.1"
-python     = "3.14.3"
+python     = "3.14.4"
 
 # Use project-local prettier (via npx) but ensure node exists.
 # markdownlint-cli2 is Node-based; install/run via npx.
