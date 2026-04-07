@@ -7,7 +7,7 @@ task_run_auto_install  = true
 
 [tools]
 # Pin Go to the currently validated stable line used by this fork's CI.
-go            = "1.26.1"
+go            = "1.26.2"
 golangci-lint = "2.11.4"
 
 # CI-style helpers Act uses
