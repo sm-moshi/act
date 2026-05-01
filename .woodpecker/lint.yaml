@@ -8,7 +8,7 @@ when:
 
 steps:
   - name: vet
-    image: dhi.io/golang:1.26.2-debian13-dev@sha256:086c893153f92793f3a1541793cd4a8e8b23bfd4ccaf70c8f4261f496080fb0e
+    image: dhi.io/golang:1.26.2-debian13-dev@sha256:b50864310796206ff91b76f04e0cd4f13c29b7721d7571336bfc75a116c40693
     volumes:
       - woodpecker-pipeline-cache:/woodpecker/cache
     environment:
@@ -22,6 +22,6 @@ steps:
       - staticcheck $(go list ./... | grep -v /artifacts)
 
   - name: codespell
-    image: dhi.io/uv:0.11.8-debian13-dev@sha256:7836090fee6a7af9e14db5747eda9ad16b1886da3771f4677e9ee160e7722d54
+    image: dhi.io/uv:0.11.8-debian13-dev@sha256:4de94fb0b05f911ca4cf039725ab7bb376567e69ebc3379f86a9a5a8a2fd7c8a
     commands:
       - uv tool run codespell
